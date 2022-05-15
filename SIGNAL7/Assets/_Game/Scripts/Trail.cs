@@ -12,33 +12,69 @@ public class Trail : MonoBehaviour
     [SerializeField]
     private LineRenderer m_LineRenderer;
 
-    // First position in line will always be the signal position
-    // Last position will always be signal starting point
+    [SerializeField]
+    private BoxCollider colliderPrefab;
+
+    [SerializeField]
+    private bool isColliderActive = false;
+
+    BoxCollider m_CurrentColliderSegment;
+
+    // are we traveling along x or z axis? by default z.
+    private bool movingXward = false;
 
     private void Start()
     {
-        //m_TrailRenderer = GetComponent<TrailRenderer>();
+        /*
+        m_Collider = GetComponent<PolygonCollider2D>();
 
-        //m_TrailRenderer.alignment = LineAlignment.View;
+        colliderPoints = new List<Vector2>();
 
+        colliderPoints.Add(new Vector2(signal.transform.position.x, signal.transform.position.z));
+        colliderPoints.Add(new Vector2(signal.transform.position.x - 1, signal.transform.position.z - 1));
+
+        m_Collider.points = colliderPoints.ToArray();
+        */
         m_LineRenderer.alignment = LineAlignment.TransformZ;
-        //m_LineRenderer.loop = true;
+        m_LineRenderer.startWidth = 0.7f;
+        m_LineRenderer.endWidth = 0.7f;
 
-        // Don't fade out trail
-        // m_TrailRenderer.time = float.PositiveInfinity;
-
-        //m_TrailRenderer.positionCount = 2;
         m_LineRenderer.positionCount = 2;
-        // Set first position and last position to signal position
-        //m_TrailRenderer.SetPosition(0, signal.transform.position);
+
         m_LineRenderer.SetPosition(0, signal.transform.position);
         m_LineRenderer.SetPosition(1, signal.transform.position);
+
+        if(isColliderActive)
+        {
+            CreateColliderSegment();
+        }
     }
 
     void FixedUpdate()
     {
         // Set first point to signal position
         m_LineRenderer.SetPosition(0, signal.transform.position);
+
+        if(isColliderActive)
+        {
+            // To get the midpoint of the trail, get the current head first
+            // Then figure out which direction the trail is moving in and cut in half.
+            Vector3 midpointOfTrailSegment = m_LineRenderer.GetPosition(0);
+
+            // Update the size of the box as well, depending on current direction
+            if(movingXward)
+            {
+                m_CurrentColliderSegment.size = new Vector3(midpointOfTrailSegment.x, m_CurrentColliderSegment.size.y, m_CurrentColliderSegment.size.z);
+                midpointOfTrailSegment.x *= 0.5f;
+            }
+            else
+            {
+                m_CurrentColliderSegment.size = new Vector3(m_CurrentColliderSegment.size.x, m_CurrentColliderSegment.size.y, midpointOfTrailSegment.z);
+                midpointOfTrailSegment.z *= 0.5f;
+            }
+
+            m_CurrentColliderSegment.transform.position = midpointOfTrailSegment;
+        }
     }
 
     public void AddPoint(Vector3 point)
@@ -62,8 +98,19 @@ public class Trail : MonoBehaviour
         // Set the new point at index 1
         m_LineRenderer.SetPosition(1, point);
 
+        // Add collider point
+        // AddColliderPoint(point);
+
         StartCoroutine(Rotate90(xInput, turnDuration));
     }
+
+    /*
+    private void AddColliderPoint(Vector3 point3)
+    {
+        colliderPoints.Add(new Vector2(point3.x, point3.z));
+        m_Collider.points = colliderPoints.ToArray();
+    }
+    */
 
     private IEnumerator Rotate90(float xInput, float turnDuration)
     {
@@ -83,6 +130,30 @@ public class Trail : MonoBehaviour
         }
 
         transform.rotation = targetRotation;
+    }
+
+    // Each line segment has an associated box collider.
+    // The scale of the collider is updated every frame.
+    private void CreateColliderSegment()
+    {
+        // Instantiate new collider segment at the current trail pos, set trail as parent
+        m_CurrentColliderSegment = Instantiate(colliderPrefab, signal.transform.position, Quaternion.identity, transform);
+
+        // Adjust segment position 3 units on the y axis
+        // m_CurrentColliderSegment.transform.position += Vector3.up * 3f;
+    }
+    public IEnumerator DissolveTrail(float dissolveTime)
+    {
+        float alpha = m_LineRenderer.material.color.a;
+        for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / dissolveTime)
+        {
+            Color newColor = new Color(1, 1, 1, 1 - t);
+            m_LineRenderer.material.color = newColor;
+            yield return null;
+        }
+
+        // Hide after dissolving
+        gameObject.SetActive(false);
     }
 
 }
