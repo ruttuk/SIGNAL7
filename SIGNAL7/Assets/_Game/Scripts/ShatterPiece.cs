@@ -16,12 +16,15 @@ public class ShatterPiece : MonoBehaviour
         m_Renderer = GetComponent<MeshRenderer>();
         m_Rigidbody = GetComponent<Rigidbody>();
         m_Renderer.sharedMaterial.SetFloat("_Amount", 0f);
+
+        m_Rigidbody.detectCollisions = false;
     }
 
     public void ApplyShatter(float explosionStrength, Vector3 explosionPos, float explosionRadius, float dissolveTime)
     {
         // Apply gravity
         m_Rigidbody.useGravity = true;
+        m_Rigidbody.detectCollisions = true;
 
         // Add explosive force
         m_Rigidbody.AddExplosionForce(explosionStrength, explosionPos, explosionRadius);

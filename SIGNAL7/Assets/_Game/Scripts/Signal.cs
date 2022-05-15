@@ -11,28 +11,40 @@ public class Signal : MonoBehaviour
     [Header("Components")]
     [SerializeField] private Trail trail1;
     [SerializeField] private Trail trail2;
+    [SerializeField] private ParticleSystem trailFX;
 
     private float xInput;
     private bool rotating;
+    private bool crashed = false; 
 
     private void Update()
     {
-        if(!rotating)
+        if(!crashed)
         {
-            transform.Translate(Vector3.forward * forwardSpeed * Time.deltaTime);
+            if (!rotating)
+            {
+                transform.Translate(Vector3.forward * forwardSpeed * Time.deltaTime);
+            }
+
+            xInput = Input.GetAxisRaw("Horizontal");
+
+            if (xInput != 0f && !rotating)
+            {
+                // Add point to the trail
+                trail1.AddLinePoint(transform.position, xInput, turnDuration);
+                trail2.AddLinePoint(transform.position, xInput, turnDuration);
+
+                // Rotate left or right 90 degrees
+                StartCoroutine(Rotate90());
+            }
         }
+    }
 
-        xInput = Input.GetAxisRaw("Horizontal");
-
-        if(xInput != 0f && !rotating)
-        {
-            // Add point to the trail
-            trail1.AddLinePoint(transform.position, xInput, turnDuration);
-            trail2.AddLinePoint(transform.position, xInput, turnDuration);
-
-            // Rotate left or right 90 degrees
-            StartCoroutine(Rotate90());
-        }
+    public void SignalCrash()
+    {
+        Debug.Log("Signal crashed!");
+        crashed = true;
+        trailFX.gameObject.SetActive(false);
     }
 
     private IEnumerator Rotate90()

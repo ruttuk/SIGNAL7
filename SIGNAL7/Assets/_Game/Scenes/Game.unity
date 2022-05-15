@@ -256,6 +256,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: fe05ac055d665de45b838642d9afa3f5, type: 2}
   pixelDensity: 512
+--- !u!1 &999534362
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 999534363}
+  m_Layer: 0
+  m_Name: ColliderContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &999534363
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 999534362}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1914795156
 GameObject:
   m_ObjectHideFlags: 0
@@ -579,6 +609,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 413897578, guid: 51c1dcf2fa2773646982ba4fe3f9040e, type: 3}
+      propertyPath: colliderContainer
+      value: 
+      objectReference: {fileID: 999534363}
     - target: {fileID: 5467465071316656504, guid: 51c1dcf2fa2773646982ba4fe3f9040e, type: 3}
       propertyPath: m_Name
       value: Signal
@@ -640,8 +674,20 @@ PrefabInstance:
       value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 7716338140510469743, guid: 51c1dcf2fa2773646982ba4fe3f9040e, type: 3}
+      propertyPath: explosionJitter
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7716338140510469743, guid: 51c1dcf2fa2773646982ba4fe3f9040e, type: 3}
+      propertyPath: explosionRadius
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7716338140510469743, guid: 51c1dcf2fa2773646982ba4fe3f9040e, type: 3}
+      propertyPath: explosionStrength
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 7716338140510469743, guid: 51c1dcf2fa2773646982ba4fe3f9040e, type: 3}
       propertyPath: explosionDissolveTime
-      value: 0.5
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 51c1dcf2fa2773646982ba4fe3f9040e, type: 3}

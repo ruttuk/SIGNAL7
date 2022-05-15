@@ -51,6 +51,7 @@ MonoBehaviour:
   turnDuration: 0.2
   trail1: {fileID: 413897578}
   trail2: {fileID: 7788474424851333278}
+  trailFX: {fileID: 2020921721339772250}
 --- !u!1001 &1887202811734517661
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -190,6 +191,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6549298425140625678, guid: 2cd7d9690f8ef624891783c64b967c1a, type: 3}
   m_PrefabInstance: {fileID: 8433663897840630644}
   m_PrefabAsset: {fileID: 0}
+--- !u!198 &2020921721339772250 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 7566510511420884526, guid: 2cd7d9690f8ef624891783c64b967c1a, type: 3}
+  m_PrefabInstance: {fileID: 8433663897840630644}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8513642556139828329
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -283,6 +289,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 5467465071316656508}
     m_Modifications:
     - target: {fileID: 1288288198464376456, guid: ea502ae5513ff68449919134cc77edb0, type: 3}
+      propertyPath: signal
+      value: 
+      objectReference: {fileID: 5467465071316656509}
+    - target: {fileID: 1288288198464376456, guid: ea502ae5513ff68449919134cc77edb0, type: 3}
       propertyPath: trail1
       value: 
       objectReference: {fileID: 413897578}
@@ -292,11 +302,11 @@ PrefabInstance:
       objectReference: {fileID: 7788474424851333278}
     - target: {fileID: 1288288198464376456, guid: ea502ae5513ff68449919134cc77edb0, type: 3}
       propertyPath: explosionRadius
-      value: 500
+      value: 400
       objectReference: {fileID: 0}
     - target: {fileID: 1288288198464376456, guid: ea502ae5513ff68449919134cc77edb0, type: 3}
       propertyPath: explosionStrength
-      value: 200
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 1288288198464376456, guid: ea502ae5513ff68449919134cc77edb0, type: 3}
       propertyPath: trailDissolveTime
@@ -304,7 +314,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1288288198464376456, guid: ea502ae5513ff68449919134cc77edb0, type: 3}
       propertyPath: explosionDissolveTime
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1615193812734404771, guid: ea502ae5513ff68449919134cc77edb0, type: 3}
       propertyPath: m_RootOrder
