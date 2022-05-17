@@ -44,6 +44,12 @@ public class Trail : MonoBehaviour
         }
     }
 
+    public void SetColor(Color c)
+    {
+        m_LineRenderer.material.color = c;
+        m_LineRenderer.material.SetColor("_EmissionColor", c);
+    }
+
     void Update()
     {
         if(!dissolving)
@@ -134,7 +140,7 @@ public class Trail : MonoBehaviour
 
     private IEnumerator Rotate90(float xInput, float turnDuration)
     {
-        Debug.Log("Rotate 90");
+        // Debug.Log("Rotate 90");
 
         float timeElapsed = 0;
         float turnModifier = xInput > 0 ? 1f : -1f;

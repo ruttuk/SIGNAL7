@@ -5,19 +5,52 @@ using UnityEngine;
 public class Signal : MonoBehaviour
 {
     [Header("Signal Settings")]
-    [SerializeField] private float forwardSpeed = 11;
-    [SerializeField] private float turnDuration = 0.2f;
+    [SerializeField] protected Color signalColor;
+    [SerializeField] protected float forwardSpeed = 11;
+    [SerializeField] protected float turnDuration = 0.2f;
 
     [Header("Components")]
+    [SerializeField] private GameObject glider;
     [SerializeField] private Trail trail1;
     [SerializeField] private Trail trail2;
     [SerializeField] private ParticleSystem trailFX;
 
-    private float xInput;
-    private bool rotating;
-    private bool crashed = false; 
+    protected float xInput;
+    protected bool rotating;
+    protected bool crashed = false;
 
-    private void Update()
+    private void Awake()
+    {
+        SetSignalColor();
+    }
+
+    private void SetSignalColor()
+    {
+        // Set color for each piece of the glider
+        Renderer[] gliderPieces = glider.GetComponentsInChildren<Renderer>();
+
+        for (int i = 0; i < gliderPieces.Length; i++)
+        {
+            gliderPieces[i].material.color = signalColor;
+        }
+
+        // Set color for each trail
+        trail1.SetColor(signalColor);
+        trail2.SetColor(signalColor);
+
+        // Set particle fx color
+        ParticleSystemRenderer fxRend = trailFX.GetComponent<ParticleSystemRenderer>();
+
+        // particle color adjuster
+        float pca = 1f;
+        float particleAlbedo = 1f;
+        Color particleColor = new Color(signalColor.r * pca, signalColor.g * pca, signalColor.b * pca, particleAlbedo);
+
+        fxRend.material.color = particleColor;
+        fxRend.trailMaterial.color = particleColor;
+    }
+
+    public virtual void Update()
     {
         if(!crashed)
         {
@@ -42,14 +75,14 @@ public class Signal : MonoBehaviour
 
     public void SignalCrash()
     {
-        Debug.Log("Signal crashed!");
+        //Debug.Log("Signal crashed!");
         crashed = true;
         trailFX.gameObject.SetActive(false);
     }
 
-    private IEnumerator Rotate90()
+    protected IEnumerator Rotate90()
     {
-        Debug.Log("Rotate 90");
+        //Debug.Log("Rotate 90");
 
         rotating = true;
         float timeElapsed = 0;

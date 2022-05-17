@@ -46,7 +46,6 @@ public class Shatter : MonoBehaviour
     {
         if(collision.tag.Equals("Trail"))
         {
-            Debug.Log("Here");
             signal.SignalCrash();
             ApplyShatterEffect();
         }
