@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Signal : MonoBehaviour
 {
@@ -15,12 +16,12 @@ public class Signal : MonoBehaviour
     [SerializeField] private Trail trail2;
     [SerializeField] private ParticleSystem trailFX;
 
-    protected float xInput;
-    protected bool rotating;
-    protected bool crashed = false;
+    public bool rotating { get; private set; }
+    public bool crashed { get; private set; }
 
     private void Awake()
     {
+        crashed = false;
         SetSignalColor();
     }
 
@@ -52,35 +53,49 @@ public class Signal : MonoBehaviour
 
     public virtual void Update()
     {
-        if(!crashed)
+        if(!crashed && !GameManager.Instance.gameOver)
         {
             if (!rotating)
             {
                 transform.Translate(Vector3.forward * forwardSpeed * Time.deltaTime);
             }
 
-            xInput = Input.GetAxisRaw("Horizontal");
+            float xInput = Input.GetAxisRaw("Horizontal");
 
             if (xInput != 0f && !rotating)
             {
-                // Add point to the trail
-                trail1.AddLinePoint(transform.position, xInput, turnDuration);
-                trail2.AddLinePoint(transform.position, xInput, turnDuration);
-
-                // Rotate left or right 90 degrees
-                StartCoroutine(Rotate90());
+                Turn(xInput);
+            }
+        }
+        else
+        {
+            if(Input.GetKeyDown(KeyCode.Space))
+            {
+                SceneManager.LoadScene(0);
+                Time.timeScale = 1f;
             }
         }
     }
 
-    public void SignalCrash()
+    public void SignalCrash(bool playerCharacter)
     {
         //Debug.Log("Signal crashed!");
         crashed = true;
         trailFX.gameObject.SetActive(false);
+        GameManager.Instance.EliminateSignal(playerCharacter);
     }
 
-    protected IEnumerator Rotate90()
+    public void Turn(float xInput)
+    {
+        // Add point to the trail
+        trail1.AddLinePoint(transform.position, xInput, turnDuration);
+        trail2.AddLinePoint(transform.position, xInput, turnDuration);
+
+        // Rotate left or right 90 degrees
+        StartCoroutine(Rotate90(xInput));
+    }
+
+    protected IEnumerator Rotate90(float xInput)
     {
         //Debug.Log("Rotate 90");
 

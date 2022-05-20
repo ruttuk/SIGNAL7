@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider))]
 public class Shatter : MonoBehaviour
 {
-    [SerializeField] private Signal signal;
+    [SerializeField] protected Signal signal;
     [SerializeField] private Trail trail1;
     [SerializeField] private Trail trail2;
 
@@ -19,17 +19,17 @@ public class Shatter : MonoBehaviour
     ShatterPiece[] shatterPieces;
     Vector3 explosionPos;
 
-    BoxCollider m_GliderCollider;
+    protected BoxCollider m_Collider;
 
     private void Awake()
     {
-        m_GliderCollider = GetComponent<BoxCollider>();
+        m_Collider = GetComponent<BoxCollider>();
 
         // Shatter script applied on the parent of all the cells
         shatterPieces = GetComponentsInChildren<ShatterPiece>();
     }
 
-    private void ApplyShatterEffect()
+    protected void ApplyShatterEffect()
     {
         Debug.Log($"Shattering {shatterPieces.Length} number of pieces.");
 
@@ -42,11 +42,11 @@ public class Shatter : MonoBehaviour
         StartCoroutine(trail1.DissolveTrail(trailDissolveTime));
         StartCoroutine(trail2.DissolveTrail(trailDissolveTime));
     } 
-    private void OnTriggerEnter(Collider collision)
+    protected virtual void OnTriggerEnter(Collider collision)
     {
         if(collision.tag.Equals("Trail"))
         {
-            signal.SignalCrash();
+            signal.SignalCrash(true);
             ApplyShatterEffect();
         }
     }

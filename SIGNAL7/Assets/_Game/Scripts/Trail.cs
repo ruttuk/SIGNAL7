@@ -28,6 +28,9 @@ public class Trail : MonoBehaviour
 
     private void Start()
     {
+        // If the starting rotation for signal is either -90f or 90f, we're moving on the X axis
+        //Debug.Log($"{gameObject.name} Starting y rotation: {signal.transform.rotation.eulerAngles.y}");
+        //movingXward = (signal.transform.rotation.eulerAngles.y / 90f) % 2 == 0;
         m_LineRenderer.alignment = LineAlignment.TransformZ;
         m_LineRenderer.startWidth = 0.7f;
         m_LineRenderer.endWidth = 0.7f;

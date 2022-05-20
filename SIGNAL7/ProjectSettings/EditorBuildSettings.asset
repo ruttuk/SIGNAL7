@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/_Game/Scenes/DataFarm.unity
+    guid: ada5ea80ee22f004089b3711637e1d74
   m_configObjects: {}

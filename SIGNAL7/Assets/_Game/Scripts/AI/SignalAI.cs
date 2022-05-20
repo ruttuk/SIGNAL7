@@ -18,21 +18,24 @@ public class SignalAI : Signal
 
     public override void Update()
     {
-        if (!rotating && !crashed)
+        if (!rotating && !crashed && !GameManager.Instance.gameOver)
         {
             transform.Translate(Vector3.forward * forwardSpeed * Time.deltaTime);
+
+            /*
+            if (timeElapsed > checkForBarrierInterval)
+            {
+                StartCoroutine(CheckForBarrier());
+                timeElapsed = 0f;
+            }
+            */
         }
 
-        if(timeElapsed > checkForBarrierInterval)
-        {
-            CheckForBarrier();
-            timeElapsed = 0f;
-        }
-
-        timeElapsed += Time.deltaTime;
+        //timeElapsed += Time.deltaTime;
     }
 
-    private void CheckForBarrier()
+    /*
+    private IEnumerator CheckForBarrier()
     {
         Debug.Log("Checking for barrier!");
         RaycastHit hit;
@@ -54,5 +57,8 @@ public class SignalAI : Signal
                 StartCoroutine(Rotate90());
             }
         }
+
+        yield return null;
     }
+    */
 }

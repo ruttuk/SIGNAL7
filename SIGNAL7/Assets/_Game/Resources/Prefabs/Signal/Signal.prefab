@@ -48,8 +48,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   signalColor: {r: 0, g: 0, b: 0, a: 0}
-  forwardSpeed: 11
-  turnDuration: 0.2
+  forwardSpeed: 12
+  turnDuration: 0.18
   glider: {fileID: 7481773613119537918}
   trail1: {fileID: 413897578}
   trail2: {fileID: 7788474424851333278}

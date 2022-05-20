@@ -835,11 +835,11 @@ MonoBehaviour:
   signal: {fileID: 0}
   trail1: {fileID: 0}
   trail2: {fileID: 0}
-  explosionStrength: 100
-  explosionRadius: 100
-  explosionJitter: 3
-  explosionDissolveTime: 0
-  trailDissolveTime: 0
+  explosionStrength: 150
+  explosionRadius: 400
+  explosionJitter: 1
+  explosionDissolveTime: 2
+  trailDissolveTime: 0.2
 --- !u!65 &7676845602627651120
 BoxCollider:
   m_ObjectHideFlags: 0
