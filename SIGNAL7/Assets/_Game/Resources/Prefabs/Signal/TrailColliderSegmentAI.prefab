@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4724169975689351781}
   - component: {fileID: 4724169975689351780}
-  m_Layer: 6
-  m_Name: TrailColliderSegment
+  m_Layer: 0
+  m_Name: TrailColliderSegmentAI
   m_TagString: Barrier
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

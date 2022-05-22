@@ -19,6 +19,8 @@ public class Signal : MonoBehaviour
     public bool rotating { get; private set; }
     public bool crashed { get; private set; }
 
+    private bool axisInUse = false;
+
     private void Awake()
     {
         crashed = false;
@@ -38,33 +40,43 @@ public class Signal : MonoBehaviour
         // Set color for each trail
         trail1.SetColor(signalColor);
         trail2.SetColor(signalColor);
-
+      
         // Set particle fx color
         ParticleSystemRenderer fxRend = trailFX.GetComponent<ParticleSystemRenderer>();
+        ParticleSystem.MainModule main = trailFX.main;
 
         // particle color adjuster
         float pca = 1f;
         float particleAlbedo = 1f;
         Color particleColor = new Color(signalColor.r * pca, signalColor.g * pca, signalColor.b * pca, particleAlbedo);
+        ParticleSystem.MinMaxGradient gradient = new ParticleSystem.MinMaxGradient(particleColor);
 
-        fxRend.material.color = particleColor;
-        fxRend.trailMaterial.color = particleColor;
+        main.startColor = gradient;
+        fxRend.trailMaterial.color = particleColor;        
     }
 
     public virtual void Update()
     {
         if(!crashed && !GameManager.Instance.gameOver)
-        {
+        {           
             if (!rotating)
             {
                 transform.Translate(Vector3.forward * forwardSpeed * Time.deltaTime);
             }
-
+            
             float xInput = Input.GetAxisRaw("Horizontal");
 
-            if (xInput != 0f && !rotating)
+            if (xInput != 0f)
             {
-                Turn(xInput);
+                if(!axisInUse && !rotating)
+                {
+                    axisInUse = true;
+                    Turn(xInput);
+                }
+            }
+            else
+            {
+                axisInUse = false;
             }
         }
         else
@@ -77,12 +89,12 @@ public class Signal : MonoBehaviour
         }
     }
 
-    public void SignalCrash(bool playerCharacter)
+    public void SignalCrash(bool playerCharacter, bool eliminatedByPlayerCharacter)
     {
         //Debug.Log("Signal crashed!");
         crashed = true;
         trailFX.gameObject.SetActive(false);
-        GameManager.Instance.EliminateSignal(playerCharacter);
+        GameManager.Instance.EliminateSignal(playerCharacter, eliminatedByPlayerCharacter, signalColor);
     }
 
     public void Turn(float xInput)
@@ -103,7 +115,7 @@ public class Signal : MonoBehaviour
         float timeElapsed = 0;
         float turnModifier = xInput > 0 ? 1f : -1f;
 
-        Quaternion startRotation = transform.rotation;
+        Quaternion startRotation = transform.rotation;        
         Quaternion targetRotation = transform.rotation * Quaternion.Euler(0, 90 * turnModifier, 0);
 
         while (timeElapsed < turnDuration)
@@ -115,5 +127,15 @@ public class Signal : MonoBehaviour
 
         transform.rotation = targetRotation;
         rotating = false;
+
+        // After turning, briefly increase forward speed to accelerate out of the turn
+        float postTurnSpeedBump = 2f;
+        float postTurnAccelerationTime = 1f;
+
+        forwardSpeed += postTurnSpeedBump;
+
+        yield return new WaitForSeconds(postTurnAccelerationTime);
+
+        forwardSpeed -= postTurnSpeedBump;
     }
 }

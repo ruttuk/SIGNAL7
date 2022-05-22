@@ -110,7 +110,7 @@ GameObject:
   - component: {fileID: 8072219929800002863}
   m_Layer: 0
   m_Name: Ground
-  m_TagString: Trail
+  m_TagString: Barrier
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -398,7 +398,7 @@ GameObject:
   - component: {fileID: 374532523828767980}
   m_Layer: 0
   m_Name: Walls
-  m_TagString: Trail
+  m_TagString: Barrier
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

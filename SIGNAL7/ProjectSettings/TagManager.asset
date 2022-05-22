@@ -5,14 +5,15 @@ TagManager:
   serializedVersion: 2
   tags:
   - Trail
+  - Barrier
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - PPV
   - Water
   - UI
-  - 
+  - Player
   - 
   - 
   - 

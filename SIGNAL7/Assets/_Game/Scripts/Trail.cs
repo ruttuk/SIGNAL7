@@ -108,9 +108,8 @@ public class Trail : MonoBehaviour
     
     public void AddLinePoint(Vector3 point, float xInput, float turnDuration)
     {
-        Debug.Log("Adding point " + point);
-        // Add one more point to count
-        m_LineRenderer.positionCount++;
+        // Add two more points - for a smooth turn
+        m_LineRenderer.positionCount ++;
 
         // move everything down 1 i.e m_Line[2] -> m_Line[3];
         for(int i = m_LineRenderer.positionCount - 1; i > 0; --i)

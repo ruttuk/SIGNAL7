@@ -18,15 +18,24 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
         }
+
+        //Time.timeScale = 0.5f;
     }
 
     [SerializeField] TextMeshProUGUI gameResultText;
-
+    [SerializeField] ScoreManager scoreManager;
 
     private int signalCount = 4;
     public bool gameOver = false;
-    public void EliminateSignal(bool playerWasEliminated)
+    public void EliminateSignal(bool playerWasEliminated, bool eliminatedByPlayerTrail, Color signalColor)
     {
+        Debug.Log("Signal eliminated");
+
+        if(eliminatedByPlayerTrail)
+        {
+            scoreManager.ShowAIEliminationBonus(signalColor);
+        }
+
         signalCount--;
 
         if(signalCount == 1 || playerWasEliminated)
@@ -41,5 +50,4 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 0.5f;
         }
     }
-
 }

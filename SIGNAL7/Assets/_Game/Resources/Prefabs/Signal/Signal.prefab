@@ -69,6 +69,10 @@ PrefabInstance:
       propertyPath: signal
       value: 
       objectReference: {fileID: 5467465071316656509}
+    - target: {fileID: 8513642556284167939, guid: ef20f775387bd1a4e87f315ead50954e, type: 3}
+      propertyPath: colliderPrefab
+      value: 
+      objectReference: {fileID: 4724169975689351780, guid: d20363ea98aa67745ba0a2576abdec13, type: 3}
     - target: {fileID: 8513642556284167941, guid: ef20f775387bd1a4e87f315ead50954e, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -216,7 +220,7 @@ PrefabInstance:
     - target: {fileID: 8513642556284167939, guid: ef20f775387bd1a4e87f315ead50954e, type: 3}
       propertyPath: colliderPrefab
       value: 
-      objectReference: {fileID: 4724169975689351780, guid: cc71c62935a9e2241a27e500afe915c7, type: 3}
+      objectReference: {fileID: 4724169975689351780, guid: d20363ea98aa67745ba0a2576abdec13, type: 3}
     - target: {fileID: 8513642556284167939, guid: ef20f775387bd1a4e87f315ead50954e, type: 3}
       propertyPath: isColliderActive
       value: 1

@@ -31,7 +31,7 @@ public class Shatter : MonoBehaviour
 
     protected void ApplyShatterEffect()
     {
-        Debug.Log($"Shattering {shatterPieces.Length} number of pieces.");
+        //Debug.Log($"Shattering {shatterPieces.Length} number of pieces.");
 
         for(int i = 0; i < shatterPieces.Length; i++)
         {
@@ -44,9 +44,9 @@ public class Shatter : MonoBehaviour
     } 
     protected virtual void OnTriggerEnter(Collider collision)
     {
-        if(collision.tag.Equals("Trail"))
+        if(collision.tag.Equals("Barrier"))
         {
-            signal.SignalCrash(true);
+            signal.SignalCrash(true, false);
             ApplyShatterEffect();
         }
     }

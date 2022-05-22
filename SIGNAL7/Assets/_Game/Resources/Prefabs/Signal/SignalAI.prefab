@@ -54,8 +54,6 @@ MonoBehaviour:
   trail1: {fileID: 6497953718314326805}
   trail2: {fileID: 3907829543261227233}
   trailFX: {fileID: 5054903431575483685}
-  checkForBarrierInterval: 0.5
-  maxDistanceCheckedForBarrier: 5
 --- !u!1001 &1183644205512087221
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -123,6 +121,30 @@ PrefabInstance:
       propertyPath: trail2
       value: 
       objectReference: {fileID: 3907829543261227233}
+    - target: {fileID: 2126071916785147326, guid: 4fc800135930e2b48a9cf38188a2faaa, type: 3}
+      propertyPath: fragileMaxTime
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2126071916785147326, guid: 4fc800135930e2b48a9cf38188a2faaa, type: 3}
+      propertyPath: fragileMinTime
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2126071916785147326, guid: 4fc800135930e2b48a9cf38188a2faaa, type: 3}
+      propertyPath: sensorMaxDistance
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2126071916785147326, guid: 4fc800135930e2b48a9cf38188a2faaa, type: 3}
+      propertyPath: sensorMinDistance
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2126071916785147326, guid: 4fc800135930e2b48a9cf38188a2faaa, type: 3}
+      propertyPath: randomTurnFrequency
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2126071916785147326, guid: 4fc800135930e2b48a9cf38188a2faaa, type: 3}
+      propertyPath: turnAwarenessDistance
+      value: 25
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4fc800135930e2b48a9cf38188a2faaa, type: 3}
 --- !u!1 &958321938021639340 stripped
@@ -306,6 +328,10 @@ PrefabInstance:
       propertyPath: signal
       value: 
       objectReference: {fileID: 1282691334511601926}
+    - target: {fileID: 8513642556284167939, guid: ef20f775387bd1a4e87f315ead50954e, type: 3}
+      propertyPath: colliderPrefab
+      value: 
+      objectReference: {fileID: 4724169975689351780, guid: cc71c62935a9e2241a27e500afe915c7, type: 3}
     - target: {fileID: 8513642556284167941, guid: ef20f775387bd1a4e87f315ead50954e, type: 3}
       propertyPath: m_RootOrder
       value: 1

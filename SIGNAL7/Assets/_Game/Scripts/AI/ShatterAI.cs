@@ -5,21 +5,25 @@ using UnityEngine;
 public class ShatterAI : Shatter
 {
     [Header("AI Settings")]
-    [Range(0.2f, 0.5f)]
+    // Minimum distance to check for turn in front
+    [Range(0.05f, 0.5f)]
     [SerializeField] private float sensorMinDistance;
-    [Range(2f, 4f)]
+    // Maximum distance to check for turn in front
+    [Range(0.5f, 4f)]
     [SerializeField] private float sensorMaxDistance;
-    [Range(0.2f, 0.4f)]
+    // Minimum time that the signal is vulnerable after turning
+    [Range(0.1f, 0.2f)]
     [SerializeField] private float fragileMinTime;
-    [Range(0.5f, 2f)]
+    [Range(0.2f, 1f)]
     [SerializeField] private float fragileMaxTime;
+    // How often does the signal conduct random turns
     [Range(0.2f, 0.8f)]
     [SerializeField] private float randomTurnFrequency;
-    // The distance to check if a turn will result in collision
+    // The distance to check if a turn will result in collision - lower value actually better
     [SerializeField] private float turnAwarenessDistance;
 
     // every 3 seconds, we'll roll for a random turn
-    private float randomTurnInterval = 3f;
+    private float randomTurnInterval = 5f;
 
     // The normal hitbox for the AI has two modes.
     // Sensor or Fragile
@@ -64,16 +68,17 @@ public class ShatterAI : Shatter
 
     protected override void OnTriggerEnter(Collider collision)
     {
-        if(collision.CompareTag("Trail"))
+        if(!signal.crashed)
         {
-            if (isFragile || signal.rotating)
+            if (collision.CompareTag("Barrier"))
             {
-                signal.SignalCrash(false);
-                ApplyShatterEffect();
-            }
-            else
-            {
-                if(!signal.crashed)
+                if (isFragile || signal.rotating)
+                {
+                    bool eliminatedByPlayer = collision.gameObject.layer == LayerMask.NameToLayer("Player");
+                    signal.SignalCrash(false, eliminatedByPlayer);
+                    ApplyShatterEffect();
+                }
+                else
                 {
                     Debug.Log("Sensed a barrier!");
 
@@ -93,21 +98,28 @@ public class ShatterAI : Shatter
     private void CalculatedTurn()
     {
         // Set randomly by default
-        float turnDir = Random.Range(-1f, 1f);
+        float turnDir;
 
         // Before turning, determine if a our current turn will put us in harms way
-        if(CheckTurnForHit(true))
+        float leftBarrierDistance = CheckTurnForHit(true);
+        float rightBarrierDistance = CheckTurnForHit(false);
+
+        // If the distance to barrier on the left is greater than on the right, turn left
+        if (leftBarrierDistance > rightBarrierDistance)
         {
-            Debug.Log("Turning left will result in hit, turn right!");
-            // Turning left will result in a hit
-            turnDir = 1f;
-        }
-        else if(CheckTurnForHit(false))
-        {
-            Debug.Log("Turning right will result in hit, turn left!");
+            Debug.Log("Turn left!");
             turnDir = -1f;
         }
-        // If both, we're screwed
+        else if(rightBarrierDistance > leftBarrierDistance)
+        {
+            Debug.Log("Turn right!");
+            turnDir = 1f;
+        }
+        else
+        {
+            // If they are either equal or there are no barriers, pick random direction.
+            turnDir = Random.Range(-1f, 1f);
+        }
 
         // Turn
         signal.Turn(turnDir);
@@ -116,20 +128,22 @@ public class ShatterAI : Shatter
     }
 
     // Will turning in the given direction result in a hit?
-    private bool CheckTurnForHit(bool left)
+    // If so, return how far away the barrier is
+    // If not, return Infinity
+    private float CheckTurnForHit(bool left)
     {
         Vector3 dir = left ? -Vector3.right : Vector3.right;
 
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.TransformDirection(dir), out hit, turnAwarenessDistance))
         {
-            if (hit.collider.CompareTag("Trail"))
+            if (hit.collider.CompareTag("Barrier"))
             {
-                return true;
+                return hit.distance;
             }
         }
 
-        return false;
+        return Mathf.Infinity;
     }
 
     private IEnumerator BeFragile()
