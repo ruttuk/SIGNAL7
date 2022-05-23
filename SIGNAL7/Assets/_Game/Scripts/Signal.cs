@@ -57,7 +57,7 @@ public class Signal : MonoBehaviour
 
     public virtual void Update()
     {
-        if(!crashed && !GameManager.Instance.gameOver)
+        if(!crashed && GameManager.Instance.IsGameRunning())
         {           
             if (!rotating)
             {

@@ -16,12 +16,12 @@ public class ScoreManager : MonoBehaviour
     TextMeshProUGUI highScoreBody;
 
     int currentScore = 0;
-    int scoreIncrement = 1;
-    int AIEliminationBonus = 100;
-    int winBonus = 500;
+    int scoreIncrement = 10;
+    int AIEliminationBonus = 1000;
+    int winBonus = 5000;
 
     float timeElapsed = 0f;
-    float addToScoreInterval = 0.25f;
+    float addToScoreInterval = 0.1f;
 
     int numHighScores = 5;
 
@@ -54,7 +54,7 @@ public class ScoreManager : MonoBehaviour
             PlayerPrefs.DeleteAll();
         }
 
-        if(!GameManager.Instance.gameOver)
+        if(GameManager.Instance.IsGameRunning())
         {
             if (timeElapsed > addToScoreInterval)
             {
@@ -117,6 +117,7 @@ public class ScoreManager : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Return))
         {
             currentPromptLetterIndex++;
+            highScorePromptIndex = 0;
 
             if(currentPromptLetterIndex == 3)
             {
@@ -179,7 +180,7 @@ public class ScoreManager : MonoBehaviour
         score.text = currentScore.ToString();
         AIEliminationBonusText.gameObject.SetActive(true);
         AIEliminationBonusText.color = Color.blue;
-        AIEliminationBonusText.text = "WIN ++500!";
+        AIEliminationBonusText.text = "WIN ++5000!";
     }
 
     public void SaveHighScore()

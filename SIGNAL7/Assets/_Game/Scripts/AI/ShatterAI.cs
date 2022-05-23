@@ -49,7 +49,7 @@ public class ShatterAI : Shatter
 
     private void Update()
     {
-        if(!isFragile && !signal.crashed && !GameManager.Instance.gameOver)
+        if(!isFragile && !signal.crashed && GameManager.Instance.IsGameRunning())
         {
             if (timeElapsed > randomTurnInterval)
             {

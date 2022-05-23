@@ -19,14 +19,64 @@ public class GameManager : MonoBehaviour
             Instance = this;
         }
 
-        //Time.timeScale = 0.5f;
+        SpawnSignals();
+
+        StartCoroutine(Countdown());
     }
 
     [SerializeField] TextMeshProUGUI gameResultText;
     [SerializeField] ScoreManager scoreManager;
+    [SerializeField] Transform[] spawnLocations;
+    [SerializeField] Signal[] signals;
 
     private int signalCount = 4;
-    public bool gameOver = false;
+
+    private bool gameOver = false;
+    private bool gameStarted = false;
+
+    public bool IsGameRunning()
+    {
+        return gameStarted && !gameOver;
+    }
+
+    private IEnumerator Countdown()
+    {
+        gameResultText.gameObject.SetActive(true);
+
+        for(int i = 3; i > 0; i--)
+        {
+            gameResultText.text = i.ToString();
+            yield return new WaitForSeconds(1f);
+        }
+
+        gameStarted = true;
+
+        gameResultText.text = "GO!";
+
+        yield return new WaitForSeconds(0.5f);
+
+        gameResultText.gameObject.SetActive(false);
+    }
+
+    private void SpawnSignals()
+    {
+        List<Vector3> spawnPositions = new List<Vector3>();
+
+        foreach(Transform t in spawnLocations)
+        {
+            spawnPositions.Add(t.position);
+        }
+
+        int randomIndex;
+
+        foreach(Signal s in signals)
+        {
+            randomIndex = Random.Range(0, spawnPositions.Count);
+            s.transform.position = spawnPositions[randomIndex];
+            spawnPositions.RemoveAt(randomIndex);
+        }
+    }
+
     public void EliminateSignal(bool playerWasEliminated, bool eliminatedByPlayerTrail, Color signalColor)
     {
         Debug.Log("Signal eliminated");
@@ -46,6 +96,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
+                gameResultText.text = "you win!";
                 scoreManager.AddWinBonus();
             }
 
