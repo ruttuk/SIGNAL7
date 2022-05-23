@@ -44,6 +44,15 @@ public class GameManager : MonoBehaviour
             {
                 gameResultText.text = "you lose!";
             }
+            else
+            {
+                scoreManager.AddWinBonus();
+            }
+
+            if (scoreManager.IsItAHighScore())
+            {
+                scoreManager.EnterHighScorePrompt();
+            }
 
             gameResultText.gameObject.SetActive(true);
             gameOver = true;
