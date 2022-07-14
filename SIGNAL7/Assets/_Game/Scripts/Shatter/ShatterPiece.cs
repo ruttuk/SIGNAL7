@@ -1,22 +1,23 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(Rigidbody))]
 public class ShatterPiece : MonoBehaviour
 {
-    MeshRenderer m_Renderer;
-    Rigidbody m_Rigidbody;
+    /**
+     * Represents a single piece of the destroyed signal
+     **/
 
-    private float customGravity = -9.81f;
+    private MeshRenderer m_Renderer;
+    private Rigidbody m_Rigidbody;
 
     private void Awake()
     {
         m_Renderer = GetComponent<MeshRenderer>();
         m_Rigidbody = GetComponent<Rigidbody>();
-        m_Renderer.sharedMaterial.SetFloat("_Amount", 0f);
 
+        m_Renderer.sharedMaterial.SetFloat(LookupTags.DissolveAmount, 0f);
         m_Rigidbody.detectCollisions = false;
     }
 
@@ -32,6 +33,7 @@ public class ShatterPiece : MonoBehaviour
         // Start dissolving
         StartCoroutine(Dissolve(dissolveTime));
 
+        // Once dissolving, disable gravity. This allows the pieces to kind of float away suspended in air.
         m_Rigidbody.useGravity = false;
     }
 
@@ -39,12 +41,12 @@ public class ShatterPiece : MonoBehaviour
     {
         for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / dissolveTime)
         {
-            m_Renderer.sharedMaterial.SetFloat("_Amount", t);
+            m_Renderer.sharedMaterial.SetFloat(LookupTags.DissolveAmount, t);
             yield return null;
         }
 
         // Hide after dissolving
         gameObject.SetActive(false);
-        m_Renderer.sharedMaterial.SetFloat("_Amount", 0f);
+        m_Renderer.sharedMaterial.SetFloat(LookupTags.DissolveAmount, 0f);
     }
 }

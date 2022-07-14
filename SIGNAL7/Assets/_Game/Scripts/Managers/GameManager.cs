@@ -5,11 +5,10 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+    #region Singleton
     public static GameManager Instance { get; private set; }
     private void Awake()
     {
-        // If there is an instance, and it's not me, delete myself.
-
         if (Instance != null && Instance != this)
         {
             Destroy(this);
@@ -20,9 +19,9 @@ public class GameManager : MonoBehaviour
         }
 
         SpawnSignals();
-
         StartCoroutine(Countdown());
     }
+    #endregion
 
     [SerializeField] TextMeshProUGUI gameResultText;
     [SerializeField] ScoreManager scoreManager;
@@ -51,7 +50,7 @@ public class GameManager : MonoBehaviour
 
         gameStarted = true;
 
-        gameResultText.text = "GO!";
+        gameResultText.text = LocalizableStrings.GameStart;
 
         yield return new WaitForSeconds(0.5f);
 
@@ -92,11 +91,11 @@ public class GameManager : MonoBehaviour
         {
             if (playerWasEliminated)
             {
-                gameResultText.text = "you lose!";
+                gameResultText.text = LocalizableStrings.YouLose;
             }
             else
             {
-                gameResultText.text = "you win!";
+                gameResultText.text = LocalizableStrings.YouWin;
                 scoreManager.AddWinBonus();
             }
 

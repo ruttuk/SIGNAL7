@@ -50,6 +50,8 @@ MonoBehaviour:
   signalColor: {r: 1, g: 0, b: 0, a: 0}
   forwardSpeed: 12
   turnDuration: 0.18
+  postTurnSpeedBump: 2.5
+  postTurnAccelerationTime: 1
   glider: {fileID: 958321938021639340}
   trail1: {fileID: 6497953718314326805}
   trail2: {fileID: 3907829543261227233}
@@ -123,27 +125,27 @@ PrefabInstance:
       objectReference: {fileID: 3907829543261227233}
     - target: {fileID: 2126071916785147326, guid: 4fc800135930e2b48a9cf38188a2faaa, type: 3}
       propertyPath: fragileMaxTime
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2126071916785147326, guid: 4fc800135930e2b48a9cf38188a2faaa, type: 3}
-      propertyPath: fragileMinTime
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2126071916785147326, guid: 4fc800135930e2b48a9cf38188a2faaa, type: 3}
-      propertyPath: sensorMaxDistance
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 2126071916785147326, guid: 4fc800135930e2b48a9cf38188a2faaa, type: 3}
-      propertyPath: sensorMinDistance
       value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 2126071916785147326, guid: 4fc800135930e2b48a9cf38188a2faaa, type: 3}
-      propertyPath: randomTurnFrequency
-      value: 0.5
+      propertyPath: fragileMinTime
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 2126071916785147326, guid: 4fc800135930e2b48a9cf38188a2faaa, type: 3}
-      propertyPath: turnAwarenessDistance
-      value: 25
+      propertyPath: sensorMaxDistance
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2126071916785147326, guid: 4fc800135930e2b48a9cf38188a2faaa, type: 3}
+      propertyPath: sensorMinDistance
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 2126071916785147326, guid: 4fc800135930e2b48a9cf38188a2faaa, type: 3}
+      propertyPath: randomTurnInterval
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2126071916785147326, guid: 4fc800135930e2b48a9cf38188a2faaa, type: 3}
+      propertyPath: randomTurnFrequency
+      value: 0.45
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4fc800135930e2b48a9cf38188a2faaa, type: 3}

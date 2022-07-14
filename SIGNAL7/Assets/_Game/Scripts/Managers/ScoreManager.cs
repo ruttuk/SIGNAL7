@@ -50,7 +50,7 @@ public class ScoreManager : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.F12))
         {
-            Debug.Log("WARNING!! DELETING PLAYER PREFS!!!");
+            //Debug.Log("WARNING!! DELETING PLAYER PREFS!!!");
             PlayerPrefs.DeleteAll();
         }
 
@@ -157,7 +157,7 @@ public class ScoreManager : MonoBehaviour
 
     public void ShowAIEliminationBonus(Color eliminatedSignalColor)
     {
-        Debug.Log("Showing elimination bonus!");
+        //Debug.Log("Showing elimination bonus!");
 
         currentScore += AIEliminationBonus;
         score.text = currentScore.ToString();
@@ -180,7 +180,7 @@ public class ScoreManager : MonoBehaviour
         score.text = currentScore.ToString();
         AIEliminationBonusText.gameObject.SetActive(true);
         AIEliminationBonusText.color = Color.blue;
-        AIEliminationBonusText.text = "WIN ++5000!";
+        AIEliminationBonusText.text = LocalizableStrings.WinBonus;
     }
 
     public void SaveHighScore()
@@ -270,7 +270,7 @@ public class ScoreManager : MonoBehaviour
     public void EnterHighScorePrompt()
     {
         highScoreTitle.gameObject.SetActive(true);
-        highScoreTitle.text = "new high score!!!";
+        highScoreTitle.text = LocalizableStrings.HighScore;
         highScoreTitle.color = new Color(0f, 244f, 255f);
 
         highScoreBody.gameObject.SetActive(true);

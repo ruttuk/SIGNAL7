@@ -1,10 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider))]
 public class Shatter : MonoBehaviour
 {
+    /**
+     * Shatter is the base collider class for determining if the signal has been hit.
+     * It also handles the shatter VFX that occur post-collision.
+     **/
+
+    [Header("Shatter Components")]
     [SerializeField] protected Signal signal;
     [SerializeField] private Trail trail1;
     [SerializeField] private Trail trail2;
@@ -31,7 +35,7 @@ public class Shatter : MonoBehaviour
 
     protected void ApplyShatterEffect()
     {
-        //Debug.Log($"Shattering {shatterPieces.Length} number of pieces.");
+        Debug.Log($"Shattering {shatterPieces.Length} number of pieces.");
 
         for(int i = 0; i < shatterPieces.Length; i++)
         {
@@ -39,12 +43,13 @@ public class Shatter : MonoBehaviour
             shatterPieces[i].ApplyShatter(explosionStrength, explosionPos, explosionRadius, explosionDissolveTime);
         }
 
+        // Dissolve both sides of the trail.
         StartCoroutine(trail1.DissolveTrail(trailDissolveTime));
         StartCoroutine(trail2.DissolveTrail(trailDissolveTime));
     } 
     protected virtual void OnTriggerEnter(Collider collision)
     {
-        if(collision.tag.Equals("Barrier"))
+        if(collision.tag.Equals(LookupTags.Barrier))
         {
             signal.SignalCrash(true, false);
             ApplyShatterEffect();

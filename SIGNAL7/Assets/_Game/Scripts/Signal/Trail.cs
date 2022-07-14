@@ -4,23 +4,20 @@ using UnityEngine;
 
 public class Trail : MonoBehaviour
 {
-    [SerializeField]
-    private Signal signal;
+    /**
+     * Each Signal has a "Trail" that is made up of 2 trail components, which are each essentially line renderers.
+     * Points are added to these lines and the trail is adjusted every time the Signal turns.
+     **/
 
-    [SerializeField]
-    private LineRenderer m_LineRenderer;
-
-    [SerializeField]
-    private BoxCollider colliderPrefab;
-
-    [SerializeField]
-    private Transform colliderContainer;
-
-    [SerializeField]
-    private bool isColliderActive = false;
+    [Header("Trail Components")]
+    [SerializeField] private Signal signal;
+    [SerializeField] private LineRenderer m_LineRenderer;
+    [SerializeField] private BoxCollider colliderPrefab;
+    [SerializeField] private Transform colliderContainer;
+    [SerializeField] private bool isColliderActive = false;
 
     BoxCollider m_CurrentColliderSegment;
-    List<BoxCollider> colliderSegments;
+    List<BoxCollider> m_ColliderSegments;
 
     // are we traveling along x or z axis? by default z.
     private bool movingXward = false;
@@ -28,9 +25,17 @@ public class Trail : MonoBehaviour
 
     private void Start()
     {
-        // If the starting rotation for signal is either -90f or 90f, we're moving on the X axis
-        //Debug.Log($"{gameObject.name} Starting y rotation: {signal.transform.rotation.eulerAngles.y}");
-        //movingXward = (signal.transform.rotation.eulerAngles.y / 90f) % 2 == 0;
+        SetLineRenderer();
+
+        if(isColliderActive)
+        {
+            m_ColliderSegments = new List<BoxCollider>();
+            CreateColliderSegment();
+        }
+    }
+
+    private void SetLineRenderer()
+    {
         m_LineRenderer.alignment = LineAlignment.TransformZ;
         m_LineRenderer.startWidth = 0.7f;
         m_LineRenderer.endWidth = 0.7f;
@@ -39,25 +44,19 @@ public class Trail : MonoBehaviour
 
         m_LineRenderer.SetPosition(0, signal.transform.position);
         m_LineRenderer.SetPosition(1, signal.transform.position);
-
-        if(isColliderActive)
-        {
-            colliderSegments = new List<BoxCollider>();
-            CreateColliderSegment();
-        }
     }
 
     public void SetColor(Color c)
     {
         m_LineRenderer.material.color = c;
-        m_LineRenderer.material.SetColor("_EmissionColor", c);
+        m_LineRenderer.material.SetColor(LookupTags.TrailEmission, c);
     }
 
     void Update()
     {
         if(!dissolving)
         {
-            // Set first point to signal position
+            // Set the first point on the line to the position of the Signal.
             m_LineRenderer.SetPosition(0, signal.transform.position);
 
             if (isColliderActive)
@@ -86,7 +85,7 @@ public class Trail : MonoBehaviour
         float diffX = segHead.x - segTail.x;
         float diffZ = segHead.z - segTail.z;
 
-        // Update size and pos depending on current direction
+        // Update size and pos depending on current direction of the signal. (will either be updating on X or Z axis)
         if (movingXward)
         {
             segLength = Mathf.Abs(diffX);
@@ -137,7 +136,7 @@ public class Trail : MonoBehaviour
     {
         // Instantiate new collider segment at the current trail pos, set trail as parent
         m_CurrentColliderSegment = Instantiate(colliderPrefab, signal.transform.position, Quaternion.identity, colliderContainer);
-        colliderSegments.Add(m_CurrentColliderSegment);
+        m_ColliderSegments.Add(m_CurrentColliderSegment);
     }
 
     private IEnumerator Rotate90(float xInput, float turnDuration)
@@ -183,7 +182,7 @@ public class Trail : MonoBehaviour
 
     private void DestroyColliderSegments()
     {
-        foreach (BoxCollider collider in colliderSegments)
+        foreach (BoxCollider collider in m_ColliderSegments)
         {
             Destroy(collider);
         }

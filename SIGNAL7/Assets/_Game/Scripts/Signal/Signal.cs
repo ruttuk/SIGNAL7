@@ -1,14 +1,20 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Signal : MonoBehaviour
 {
+    /**
+     * The signal is the base class for each character in the game (they look kind of like spaceships)
+     * A constant trail follows the signal which is deadly if crashed in to. These trails remain there for the entirety of the game.
+     **/
+
     [Header("Signal Settings")]
     [SerializeField] protected Color signalColor;
     [SerializeField] protected float forwardSpeed = 11;
     [SerializeField] protected float turnDuration = 0.2f;
+    [SerializeField] protected float postTurnSpeedBump = 2.5f;
+    [SerializeField] protected float postTurnAccelerationTime = 1f;
 
     [Header("Components")]
     [SerializeField] private GameObject glider;
@@ -45,7 +51,7 @@ public class Signal : MonoBehaviour
         ParticleSystemRenderer fxRend = trailFX.GetComponent<ParticleSystemRenderer>();
         ParticleSystem.MainModule main = trailFX.main;
 
-        // particle color adjuster
+        // Adjust the particle color
         float pca = 1f;
         float particleAlbedo = 1f;
         Color particleColor = new Color(signalColor.r * pca, signalColor.g * pca, signalColor.b * pca, particleAlbedo);
@@ -58,29 +64,13 @@ public class Signal : MonoBehaviour
     public virtual void Update()
     {
         if(!crashed && GameManager.Instance.IsGameRunning())
-        {           
-            if (!rotating)
-            {
-                transform.Translate(Vector3.forward * forwardSpeed * Time.deltaTime);
-            }
-            
-            float xInput = Input.GetAxisRaw("Horizontal");
-
-            if (xInput != 0f)
-            {
-                if(!axisInUse && !rotating)
-                {
-                    axisInUse = true;
-                    Turn(xInput);
-                }
-            }
-            else
-            {
-                axisInUse = false;
-            }
+        {
+            // If we haven't crashed and the game is still running, check for user input.
+            CheckForInput();
         }
         else
         {
+            // If space is pressed, restart the level.
             if(Input.GetKeyDown(KeyCode.Space))
             {
                 SceneManager.LoadScene(0);
@@ -89,10 +79,36 @@ public class Signal : MonoBehaviour
         }
     }
 
+    private void CheckForInput()
+    {
+        // As long as we aren't turning, the signal keeps moving forward.
+        if (!rotating)
+        {
+            transform.Translate(Vector3.forward * forwardSpeed * Time.deltaTime);
+        }
+
+        float xInput = Input.GetAxisRaw("Horizontal");
+
+        if (xInput != 0f)
+        {
+            if (!axisInUse && !rotating)
+            {
+                axisInUse = true;
+                Turn(xInput);
+            }
+        }
+        else
+        {
+            axisInUse = false;
+        }
+    }
+
     public void SignalCrash(bool playerCharacter, bool eliminatedByPlayerCharacter)
     {
-        //Debug.Log("Signal crashed!");
+        Debug.Log("Signal crashed!");
         crashed = true;
+
+        // Disable the particle trail fx.
         trailFX.gameObject.SetActive(false);
         GameManager.Instance.EliminateSignal(playerCharacter, eliminatedByPlayerCharacter, signalColor);
     }
@@ -109,8 +125,6 @@ public class Signal : MonoBehaviour
 
     protected IEnumerator Rotate90(float xInput)
     {
-        //Debug.Log("Rotate 90");
-
         rotating = true;
         float timeElapsed = 0;
         float turnModifier = xInput > 0 ? 1f : -1f;
@@ -128,10 +142,8 @@ public class Signal : MonoBehaviour
         transform.rotation = targetRotation;
         rotating = false;
 
-        // After turning, briefly increase forward speed to accelerate out of the turn
-        float postTurnSpeedBump = 2f;
-        float postTurnAccelerationTime = 1f;
-
+        // After turning, briefly increase forward speed to accelerate out of the turn.
+        // This can be used strategically by the player to get an edge on the other signals.
         forwardSpeed += postTurnSpeedBump;
 
         yield return new WaitForSeconds(postTurnAccelerationTime);

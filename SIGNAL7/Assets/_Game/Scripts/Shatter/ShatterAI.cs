@@ -1,44 +1,50 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ShatterAI : Shatter
 {
+    /**
+     * The ShatterAI has two modes: Sensor or Fragile.
+     * While in Sensor mode, the collider is bigger and slightly in front of the signal.
+     * If a collision is detected (i.e. the signal detects an obstacle in the way), the signal AI will turn.
+     * After turning, the signal enters fragile mode for a brief period during which they are vulnerable to crashing.
+     * This is to prevent the signal from essentially being TOO smart and always pre-emptively detecting a collision.
+     * After the determined "fragile time" expires, the hitbox is readjusted and the AI re-enters Sensor mode.
+     **/
+
     [Header("AI Settings")]
     // Minimum distance to check for turn in front
     [Range(0.05f, 0.5f)]
     [SerializeField] private float sensorMinDistance;
+
     // Maximum distance to check for turn in front
     [Range(0.5f, 4f)]
     [SerializeField] private float sensorMaxDistance;
+
     // Minimum time that the signal is vulnerable after turning
     [Range(0.1f, 0.2f)]
     [SerializeField] private float fragileMinTime;
+
+    // Maximum time that the signal is vulnerable after turning
     [Range(0.2f, 1f)]
     [SerializeField] private float fragileMaxTime;
+
     // How often does the signal conduct random turns
     [Range(0.2f, 0.8f)]
     [SerializeField] private float randomTurnFrequency;
+
     // The distance to check if a turn will result in collision - lower value actually better
     [SerializeField] private float turnAwarenessDistance;
 
-    // every 3 seconds, we'll roll for a random turn
-    private float randomTurnInterval = 5f;
-
-    // The normal hitbox for the AI has two modes.
-    // Sensor or Fragile
-    // 
-    // while in sensor mode, the collider is bigger and out in front of the signal
-    // if a collision is detected, the signal AI will turn
-    // After turning, the signal enters fragile mode for a brief period
-    // during which they are susceptible to crash
-    // and then the hitbox is readjusted and the AI re-enters Sensor mode
+    // At this interval, we roll for a random turn
+    [SerializeField] private float randomTurnInterval = 4;
 
     private bool isFragile = false;
+
     private Vector3 initialColliderSize;
     private Vector3 initialColliderCenter;
-    private float sensorZOffset;
 
+    private float sensorZOffset;
     private float timeElapsed = 0f;
 
     private void Start()
@@ -49,11 +55,16 @@ public class ShatterAI : Shatter
 
     private void Update()
     {
-        if(!isFragile && !signal.crashed && GameManager.Instance.IsGameRunning())
+        CheckForTurn();
+    }
+
+    private void CheckForTurn()
+    {
+        if (!isFragile && !signal.crashed && GameManager.Instance.IsGameRunning())
         {
             if (timeElapsed > randomTurnInterval)
             {
-                // Roll for turn!
+                // Roll for turn if we're not fragile, haven't crashed and enough time has passed for a random turn.
                 if (Random.Range(0f, 1f) < randomTurnFrequency)
                 {
                     Debug.Log("Rolled for random turn!");
@@ -70,11 +81,12 @@ public class ShatterAI : Shatter
     {
         if(!signal.crashed)
         {
-            if (collision.CompareTag("Barrier"))
+            if (collision.CompareTag(LookupTags.Barrier))
             {
                 if (isFragile || signal.rotating)
                 {
-                    bool eliminatedByPlayer = collision.gameObject.layer == LayerMask.NameToLayer("Player");
+                    // Check if we've crashed into the Player Characters trail, which triggers bonus points for them.
+                    bool eliminatedByPlayer = collision.gameObject.layer == LayerMask.NameToLayer(LookupTags.Player);
                     signal.SignalCrash(false, eliminatedByPlayer);
                     ApplyShatterEffect();
                 }
@@ -89,12 +101,17 @@ public class ShatterAI : Shatter
                     m_Collider.center = initialColliderCenter;
                     m_Collider.size = initialColliderSize;
 
+                    // Turn to pre-emptively avoid the sensed barrier
                     CalculatedTurn();
                 }
             }
         }
     }
 
+    /// <summary>
+    /// Determine which direction the SignalAI should turn.
+    /// Check both ways (left/right) before turning and make the best decision.
+    /// </summary>
     private void CalculatedTurn()
     {
         // Set randomly by default
@@ -107,12 +124,12 @@ public class ShatterAI : Shatter
         // If the distance to barrier on the left is greater than on the right, turn left
         if (leftBarrierDistance > rightBarrierDistance)
         {
-            Debug.Log("Turn left!");
+            // Turn left
             turnDir = -1f;
         }
         else if(rightBarrierDistance > leftBarrierDistance)
         {
-            Debug.Log("Turn right!");
+            // Turn right
             turnDir = 1f;
         }
         else
@@ -124,12 +141,15 @@ public class ShatterAI : Shatter
         // Turn
         signal.Turn(turnDir);
 
+        // Enter fragile mode
         StartCoroutine(BeFragile());
     }
 
-    // Will turning in the given direction result in a hit?
-    // If so, return how far away the barrier is
-    // If not, return Infinity
+    /// <summary>
+    /// Cast a raycast either to the left or right of the Signal and return the distance of the barrier in that direction.
+    /// </summary>
+    /// <param name="left"></param>
+    /// <returns></returns>
     private float CheckTurnForHit(bool left)
     {
         Vector3 dir = left ? -Vector3.right : Vector3.right;
@@ -137,7 +157,7 @@ public class ShatterAI : Shatter
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.TransformDirection(dir), out hit, turnAwarenessDistance))
         {
-            if (hit.collider.CompareTag("Barrier"))
+            if (hit.collider.CompareTag(LookupTags.Barrier))
             {
                 return hit.distance;
             }
@@ -146,6 +166,10 @@ public class ShatterAI : Shatter
         return Mathf.Infinity;
     }
 
+    /// <summary>
+    /// For a random period of time, the signal becomes vulnerable and does not check for barriers.
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator BeFragile()
     {
         // Wait for a random bit of time before resuming sensor mode
